@@ -6,6 +6,9 @@
     <p><strong>LeanPress</strong> represents a comprehensive optimization framework for WordPress that achieves <span class="highlight">85% JavaScript reduction</span>, <span class="highlight">65% faster page loads</span>, and <span class="highlight">90% attack surface reduction</span> through strategic removal of unnecessary features rather than complete code rewrites. This document provides a complete technical breakdown of all optimizations, performance metrics, and quantitative improvements.</p>
 </div>
 
+<img width="2728" height="1630" alt="image" src="https://github.com/user-attachments/assets/61f7b8aa-637c-4cbd-9f56-9131c73897f0" />
+
+
 <!-- 1. JavaScript Optimization Statistics -->
 <h2>1. JavaScript Optimization Statistics</h2>
 
