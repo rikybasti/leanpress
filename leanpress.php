@@ -3,7 +3,7 @@
  * Plugin Name: LeanPress
  * Plugin URI: https://leanbunker.com/leanpress
  * Description: WordPress Optimized Fork with Complete Admin Control Panel & Hardware Optimizations. Disables unnecessary features, enhances security, and optimizes performance.
- * Version: 0.0.2
+ * Version: 0.0.3
  * Author: Riccardo Bastillo - Lean Bunker
  * Author URI: https://leanbunker.com
  * License: GPL-2.0+
@@ -1816,33 +1816,32 @@ function leanpress_apply_all_optimizations() {
         }, 9999);
     }
     
-    // 🔒 Remove WP Generator
-    if (leanpress_is_enabled('remove_wp_generator')) {
-        add_action('init', function() {
-            remove_action('wp_head', 'wp_generator');
-            remove_action('wp_head', 'rsd_link');
-            remove_action('wp_head', 'wlwmanifest_link');
-            remove_action('wp_head', 'index_rel_link');
-            remove_action('wp_head', 'parent_post_rel_link');
-            remove_action('wp_head', 'start_post_rel_link');
-            remove_action('wp_head', 'adjacent_posts_rel_link_wp_head');
-            remove_action('wp_head', 'rest_output_link_wp_head');
-            remove_action('wp_head', 'wp_oembed_add_discovery_links');
-            remove_action('wp_head', 'wp_oembed_add_host_js');
-            remove_action('wp_head', 'wp_shortlink_wp_head');
-            remove_action('template_redirect', 'wp_shortlink_header');
-            remove_action('template_redirect', 'rest_output_link_header');
-            
-            add_filter('style_loader_src', function($src) {
-                return remove_query_arg('ver', $src);
-            });
-            add_filter('script_loader_src', function($src) {
-                return remove_query_arg('ver', $src);
-            });
-            
-            header_remove('X-Pingback');
-        }, 9999);
+    /**
+ * Remove WP Generator Meta (optimized - no slowdowns)
+ * Uses native WordPress hooks, no output buffering or regex
+ */
+function leanpress_remove_generator() {
+    // Skip in admin to avoid any slowdown
+    if (is_admin()) {
+        return;
     }
+    
+    // Remove from HTML head
+    remove_action('wp_head', 'wp_generator');
+    
+    // Remove from all feed types
+    remove_action('rss2_head', 'the_generator');
+    remove_action('rss_head', 'the_generator');
+    remove_action('rdf_header', 'the_generator');
+    remove_action('atom_head', 'the_generator');
+    remove_action('commentsrss2_head', 'the_generator');
+    remove_action('opml_head', 'the_generator');
+    remove_action('app_head', 'the_generator');
+    
+    // Remove from generator filter
+    add_filter('the_generator', '__return_empty_string');
+}
+add_action('init', 'leanpress_remove_generator', 1);
     
     // 🔒 Disable oEmbed
     if (leanpress_is_enabled('disable_oembed')) {
